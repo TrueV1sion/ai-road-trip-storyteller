@@ -3,14 +3,22 @@ Write-Host ""
 Write-Host "🚀 AI ROAD TRIP STORYTELLER - DEMO LAUNCHER" -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host ""
+
+# Check if build exists
+if (!(Test-Path "dist")) {
+    Write-Host "❌ Error: Build not found. Please run 'npm run build:web' first." -ForegroundColor Red
+    exit 1
+}
+
 Write-Host "Choose your deployment method:" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "[1] 🎯 EASY: Drag & Drop Deploy (Recommended)" -ForegroundColor Green
-Write-Host "[2] 🛠️  CLI: Command Line Deploy" -ForegroundColor Blue
-Write-Host "[3] ❌ Exit" -ForegroundColor Red
+Write-Host "[2] 🛠️  CLI: Command Line Deploy (Advanced)" -ForegroundColor Blue
+Write-Host "[3] 🔧 Build Project First" -ForegroundColor Yellow
+Write-Host "[4] ❌ Exit" -ForegroundColor Red
 Write-Host ""
 
-$choice = Read-Host "Enter your choice (1, 2, or 3)"
+$choice = Read-Host "Enter your choice (1, 2, 3, or 4)"
 
 switch ($choice) {
     "1" {
@@ -36,20 +44,66 @@ switch ($choice) {
     }
     "2" {
         Write-Host ""
-        Write-Host "🛠️  Starting CLI deployment..." -ForegroundColor Blue
+        Write-Host "🛠️  CLI Deployment Setup..." -ForegroundColor Blue
         Write-Host ""
-        Write-Host "Step 1: Login to Netlify" -ForegroundColor Yellow
-        netlify login
+        
+        # Check if Netlify CLI is installed
+        try {
+            $netlifyVersion = netlify --version 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "✅ Netlify CLI found: $netlifyVersion" -ForegroundColor Green
+            } else {
+                throw "Netlify CLI not found"
+            }
+        } catch {
+            Write-Host "❌ Netlify CLI not installed. Installing now..." -ForegroundColor Red
+            npm install -g netlify-cli
+        }
+        
+        # Check authentication status
+        Write-Host ""
+        Write-Host "🔐 Checking authentication status..." -ForegroundColor Yellow
+        try {
+            $authStatus = netlify status 2>&1
+            if ($authStatus -match "Not logged in") {
+                Write-Host "❌ Not logged in to Netlify" -ForegroundColor Red
+                Write-Host ""
+                Write-Host "Please run the following commands in a separate terminal:" -ForegroundColor Yellow
+                Write-Host "  1. netlify login" -ForegroundColor White
+                Write-Host "  2. netlify init" -ForegroundColor White
+                Write-Host "  3. netlify deploy --dir=dist --prod" -ForegroundColor White
+                Write-Host ""
+                Write-Host "Or use Option 1 (Drag & Drop) for easier deployment!" -ForegroundColor Green
+            } else {
+                Write-Host "✅ Already logged in to Netlify" -ForegroundColor Green
+                Write-Host ""
+                Write-Host "You can now run:" -ForegroundColor Yellow
+                Write-Host "  netlify deploy --dir=dist --prod" -ForegroundColor White
+            }
+        } catch {
+            Write-Host "⚠️  Could not check auth status. Please run 'netlify login' first." -ForegroundColor Yellow
+        }
         
         Write-Host ""
-        Write-Host "Step 2: Initialize site (if not done already)" -ForegroundColor Yellow
-        Write-Host "Run: netlify init" -ForegroundColor White
-        Write-Host ""
-        Write-Host "Step 3: Deploy to Netlify" -ForegroundColor Yellow
-        Write-Host "Run: netlify deploy --dir=dist --prod" -ForegroundColor White
+        Write-Host "💡 Tip: For automated deployments, use:" -ForegroundColor Cyan
+        Write-Host "  netlify deploy --dir=dist --prod --auth=YOUR_AUTH_TOKEN" -ForegroundColor White
+        Write-Host "  (Get token from: https://app.netlify.com/user/applications)" -ForegroundColor White
         Write-Host ""
     }
     "3" {
+        Write-Host ""
+        Write-Host "🔧 Building project..." -ForegroundColor Yellow
+        npm run build:web
+        
+        if (Test-Path "dist") {
+            Write-Host "✅ Build complete! You can now deploy." -ForegroundColor Green
+            Write-Host "Run this script again to deploy." -ForegroundColor White
+        } else {
+            Write-Host "❌ Build failed. Please check the errors above." -ForegroundColor Red
+        }
+        Write-Host ""
+    }
+    "4" {
         Write-Host "Exiting..." -ForegroundColor Red
         exit
     }
