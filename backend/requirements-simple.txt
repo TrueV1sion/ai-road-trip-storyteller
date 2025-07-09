@@ -1,0 +1,40 @@
+# Core dependencies
+fastapi
+uvicorn[standard]
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+email-validator
+
+# Database
+sqlalchemy
+psycopg2-binary
+alembic
+
+# Environment and configuration
+python-dotenv
+pydantic
+pydantic-settings
+
+# External services
+httpx
+redis
+
+# Payment processing (optional for now)
+# stripe
+
+# Google Cloud services (optional for now)
+# google-cloud-aiplatform
+# google-cloud-texttospeech
+# google-cloud-storage
+
+# Monitoring (optional for now)
+# sentry-sdk[fastapi]
+# prometheus-client
+
+# Development tools (optional)
+# pytest
+# pytest-asyncio
+# black
+# flake8
+# pre-commit

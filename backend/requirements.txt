@@ -1,0 +1,41 @@
+# Core dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+email-validator==2.1.0
+
+# Database
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+alembic==1.13.0
+
+# Environment and configuration
+python-dotenv==1.0.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# External services
+httpx==0.25.2
+redis==5.0.1
+celery==5.3.4
+
+# Google Cloud services
+google-cloud-aiplatform==1.38.1
+google-cloud-texttospeech==2.14.2
+google-cloud-storage==2.13.0
+
+# Payment processing
+stripe==7.8.0
+
+# Monitoring and logging
+sentry-sdk[fastapi]==1.39.1
+prometheus-client==0.19.0
+
+# Development tools
+pytest==7.4.3
+pytest-asyncio==0.21.1
+black==23.12.0
+flake8==6.1.0
+pre-commit==3.6.0
